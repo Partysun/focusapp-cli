@@ -1,0 +1,33 @@
+{
+  "name": "focusapp-cli",
+  "version": "0.1.0",
+  "description": "Pomodoro cli app",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Partysun/focus-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Partysun/focus-cli/issues"
+  },
+  "homepage": "https://github.com/Partysun/focus-cli#readme",
+  "preferGlobal": true,
+  "bin": {
+    "focus": "main.js"
+  },
+  "keywords": [
+    "pomodoro",
+    "focus",
+    "cli"
+  ],
+  "author": "Yura Zatsepin",
+  "license": "MIT",
+  "dependencies": {
+    "emmett": "^3.1.1",
+    "inquirer": "^3.2.0",
+    "jsonfile": "^3.0.1",
+    "node-notifier": "^5.1.2"
+  }
+}
