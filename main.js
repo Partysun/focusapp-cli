@@ -5,8 +5,9 @@ const homedir = require('os').homedir();
 const configpath = `${homedir}/.focus.json`;
 const Pomodoro = require('./pomodoro.js'); 
 const Notification = require('node-notifier').Notification;
-const inquirer = require('inquirer');
 const notifier = new Notification({sound: 'Heya'});
+const inquirer = require('inquirer');
+inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 const Datastore = require('nedb');
 const moment = require('moment');
 const usage = require('cli-usage');
@@ -43,14 +44,35 @@ const stats = () => {
   });
 }
 
+const searchTask = (_, input) => {
+  return new Promise((resolve, reject) => { 
+    db.find({ title: new RegExp(input) }, (err, docs) => {
+      //docs && console.log(docs); 
+      if (!err) {
+        const result = docs.map((task, index) => {
+          return task.title;
+        })
+        if (result.length === 0 && input && input.length > 0) {
+          resolve([input,]);
+        }
+        resolve(result);
+      } else {
+        reject(); 
+      }
+    });
+  });
+}
+
 const ask = () => {
   return new Promise((resolve) => {
     const questions = [
       {
-        type: 'input',
+        type: 'autocomplete',
         name: 'task',
-        message: 'What\'s the task name'
-      },
+        message: 'Create new task or search',
+        pageSize: 5,
+        source: searchTask
+      }
     ];
 
     inquirer.prompt(questions).then((answers) => {

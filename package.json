@@ -28,6 +28,7 @@
     "cli-usage": "^0.1.4",
     "emmett": "^3.1.1",
     "inquirer": "^3.2.0",
+    "inquirer-autocomplete-prompt": "^0.11.0",
     "jsonfile": "^3.0.1",
     "minimist": "^1.2.0",
     "moment": "^2.18.1",

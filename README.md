@@ -32,4 +32,4 @@ $ focus
 - [ ] Stats show today tasks
 - [ ] Stats show heatmap of tasks of the month
 - [ ] Set configaration through the args, not only config file
-- [ ] Autocomplete tasks title
+- [x] Autocomplete tasks title
