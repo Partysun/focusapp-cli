@@ -7,6 +7,10 @@ const Pomodoro = require('./pomodoro.js');
 const Notification = require('node-notifier').Notification;
 const inquirer = require('inquirer');
 const notifier = new Notification({sound: 'Heya'});
+const Datastore = require('nedb');
+const moment = require('moment');
+
+db = new Datastore({ filename: './db', autoload: true });
 
 jsonfile.readFile(configpath, function(err, savedConfig) {
   let config = {
@@ -24,6 +28,17 @@ jsonfile.readFile(configpath, function(err, savedConfig) {
   launch(config);
 })
 
+const stats = () => {
+  const start = moment().startOf('day').unix() * 1000;  
+  db.find({
+    created: {
+      $gte:start,
+    }
+  }, (err, docs) => {
+    console.log(`Focus times today: ${docs.length}`); 
+  });
+}
+
 const ask = () => {
   return new Promise((resolve) => {
     const questions = [
@@ -35,7 +50,10 @@ const ask = () => {
     ];
 
     inquirer.prompt(questions).then((answers) => {
-      //console.log(answers);
+      db.insert({
+        title: answers.task,
+        created: Date.now()
+      });
       resolve();
     });
   });
@@ -48,7 +66,7 @@ function launch(config) {
     config.shortRestDuration,
     config.longRestDuration
   );
-  
+
   ask().then(() => {
     pd.start(); 
   });
