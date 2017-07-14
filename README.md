@@ -19,9 +19,17 @@ Options:
 - --help, -h
 - stats
 
-## Example `shell`
+### Example `shell`
 
 # get stats information
 $ focus stats
 # start your focus time
 $ focus
+
+## Roadmap
+
+- [ ] Stats show count of all tasks 
+- [ ] Stats show today tasks
+- [ ] Stats show heatmap of tasks of the month
+- [ ] Set configaration through the args, not only config file
+- [ ] Autocomplete tasks title
