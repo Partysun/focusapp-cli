@@ -1,6 +1,6 @@
 {
   "name": "focusapp-cli",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Pomodoro cli app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,9 +25,11 @@
   "author": "Yura Zatsepin",
   "license": "MIT",
   "dependencies": {
+    "cli-usage": "^0.1.4",
     "emmett": "^3.1.1",
     "inquirer": "^3.2.0",
     "jsonfile": "^3.0.1",
+    "minimist": "^1.2.0",
     "moment": "^2.18.1",
     "nedb": "^1.8.0",
     "node-notifier": "^5.1.2"

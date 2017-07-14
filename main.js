@@ -9,6 +9,10 @@ const inquirer = require('inquirer');
 const notifier = new Notification({sound: 'Heya'});
 const Datastore = require('nedb');
 const moment = require('moment');
+const usage = require('cli-usage');
+const argv = require('minimist')(process.argv.slice(2));
+
+usage('./usage.md');
 
 db = new Datastore({ filename: './db', autoload: true });
 
@@ -67,9 +71,14 @@ function launch(config) {
     config.longRestDuration
   );
 
-  ask().then(() => {
-    pd.start(); 
-  });
+  if (argv['_'][0] === 'stats') {
+    stats(); 
+    return;
+  } else {
+    ask().then(() => {
+      pd.start(); 
+    });
+  }
 
   pd.on('stop', (e) => {
     const { state, step } = e.data;

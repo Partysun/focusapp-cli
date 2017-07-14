@@ -1,6 +1,6 @@
 # Focusapp-cli
 
-Pomodoro cli application.
+Focus is the tiny cli pomodoro application
 Read more about tech [in wikipedia](https://en.wikipedia.org/wiki/Pomodoro_Technique#Underlying_principles)
 
 ## Installation
@@ -12,3 +12,14 @@ npm install -g focusapp-cli
 ## Usage
 
 Run `focus` to start
+
+Options: 
+- --help, -h
+- stats
+
+## Example `shell`
+
+# get stats information
+$ focus stats
+# start your focus time
+$ focus
