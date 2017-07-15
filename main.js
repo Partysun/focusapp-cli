@@ -1,70 +1,72 @@
 #!/usr/bin/env node
 
-const jsonfile = require('jsonfile');
 const homedir = require('os').homedir();
-const configpath = `${homedir}/.focus.json`;
-const Pomodoro = require('./pomodoro.js'); 
+const jsonfile = require('jsonfile');
 const Notification = require('node-notifier').Notification;
-const notifier = new Notification({sound: 'Heya'});
 const inquirer = require('inquirer');
 inquirer.registerPrompt('autocomplete', require('inquirer-autocomplete-prompt'));
 const Datastore = require('nedb');
 const moment = require('moment');
 const usage = require('cli-usage');
 const argv = require('minimist')(process.argv.slice(2));
+const Pomodoro = require('./pomodoro.js');
+
+const configpath = `${homedir}/.focus.json`;
+const notifier = new Notification({sound: 'Heya'});
 
 usage('./usage.md');
 
-db = new Datastore({ filename: './db', autoload: true });
+const db = new Datastore({filename: './db', autoload: true});
 
-jsonfile.readFile(configpath, function(err, savedConfig) {
+jsonfile.readFile(configpath, (err, savedConfig) => {
   let config = {
     stepsInSet: 4,
     shortRestDuration: 5,
     longRestDuration: 25,
     focusTime: 30,
     sound: true
-  }
+  };
   if (err) {
-    jsonfile.writeFileSync(configpath, config, {spaces: 2}) 
+    jsonfile.writeFileSync(configpath, config, {spaces: 2});
   } else {
     config = Object.assign({}, config, savedConfig);
   }
   launch(config);
-})
+});
 
 const stats = () => {
-  const start = moment().startOf('day').unix() * 1000;  
+  const start = moment().startOf('day').unix() * 1000;
   db.find({
     created: {
-      $gte:start,
+      $gte: start
     }
   }, (err, docs) => {
-    console.log(`Focus times today: ${docs.length}`); 
+    if (err) {
+      console.log('App crushes with the database error!');
+    }
+    console.log(`Focus times today: ${docs.length}`);
   });
-}
+};
 
 const searchTask = (_, input) => {
-  return new Promise((resolve, reject) => { 
-    db.find({ title: new RegExp(input) }, (err, docs) => {
-      //docs && console.log(docs); 
-      if (!err) {
-        const result = docs.map((task, index) => {
-          return task.title;
-        })
-        if (result.length === 0 && input && input.length > 0) {
-          resolve([input,]);
-        }
-        resolve(result);
-      } else {
-        reject(); 
+  return new Promise((resolve, reject) => {
+    db.find({title: new RegExp(input)}, (err, docs) => {
+      if (err) {
+        reject();
       }
+      const result = docs.map(task => {
+        return task.title;
+      });
+      if (result.length === 0 && input && input.length > 0) {
+        resolve([input]);
+      }
+      resolve(result);
     });
   });
-}
+};
 
 const ask = () => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const questions = [
       {
         type: 'autocomplete',
@@ -75,7 +77,7 @@ const ask = () => {
       }
     ];
 
-    inquirer.prompt(questions).then((answers) => {
+    inquirer.prompt(questions).then(answers => {
       db.insert({
         title: answers.task,
         created: Date.now()
@@ -83,7 +85,7 @@ const ask = () => {
       resolve();
     });
   });
-}
+};
 
 function launch(config) {
   const pd = new Pomodoro(
@@ -93,20 +95,19 @@ function launch(config) {
     config.longRestDuration
   );
 
-  if (argv['_'][0] === 'stats') {
-    stats(); 
-    return;
+  if (argv._[0] === 'stats') {
+    stats();
   } else {
     ask().then(() => {
-      pd.start(); 
+      pd.start();
     });
   }
 
-  pd.on('stop', (e) => {
-    const { state, step } = e.data;
+  pd.on('stop', e => {
+    const {state, step} = e.data;
     notifier.notify({
-      'title': 'Focus',
-      'message': `Stop: ${state}, step ${step}`,
+      title: 'Focus',
+      message: `Stop: ${state}, step ${step}`,
       sound: config.sound ? 'Heya' : false,
       wait: true,
       timeout: 5
@@ -118,13 +119,13 @@ function launch(config) {
       pd.start();
     } else {
       ask().then(() => {
-        pd.start(); 
+        pd.start();
       });
     }
   });
 
-  pd.on('tick', (e) => {
-    const { leftTime, state } = e.data;
+  pd.on('tick', e => {
+    const {leftTime, state} = e.data;
     process.stdout.cursorTo(0);
     process.stdout.clearLine();
     process.stdout.write(`${state}: ${leftTime}`);
