@@ -2,7 +2,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Partysun/focusapp-cli/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/Partysun/focusapp-cli.svg?branch=master)](https://travis-ci.org/Partysun/focusapp-cli)
 
-Focus is the tiny cli pomodoro application
+Focus is the tiny cli pomodoro application. After pomodoro has eaten, your OS
+fires the notification. (Mac OS tested). 
+
 Read more about tech [in wikipedia](https://en.wikipedia.org/wiki/Pomodoro_Technique#Underlying_principles)
 
 ![Demo](https://github.com/Partysun/focusapp-cli/blob/master/demo.gif)
@@ -53,3 +55,7 @@ Run tests `npm test`
 Run linting: `npm run lint` or `xo`
 
 Thank you.
+
+## Use inside tmux session
+
+When using focus within a tmux session, Mac OS notifications doesn't work. This can be solved by following the steps described in this comment: https://github.com/julienXX/terminal-notifier/issues/115#issuecomment-104214742
