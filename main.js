@@ -56,7 +56,7 @@ const searchTask = (_, input) => {
       }
       const result = docs.map(task => {
         return task.title;
-      });
+      }).filter((task, index, tasks) => tasks.indexOf(task) === index);
       if (result.length === 0 && input && input.length > 0) {
         resolve([input]);
       }
@@ -72,7 +72,7 @@ const ask = () => {
         type: 'autocomplete',
         name: 'task',
         message: 'Create new task or search',
-        pageSize: 5,
+        pageSize: 3,
         source: searchTask
       }
     ];
