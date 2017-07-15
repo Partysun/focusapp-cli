@@ -39,3 +39,17 @@ $ focus
 - [ ] Report show heatmap of tasks of the month
 - [ ] Set configaration through the args, not only config file
 - [x] Autocomplete tasks title
+
+## For Developers
+
+Preparing...
+
+1. clone this repo
+2. yarn
+3. node.js main.js
+
+Run tests `npm test`
+
+Run linting: `npm run lint` or `xo`
+
+Thank you.
