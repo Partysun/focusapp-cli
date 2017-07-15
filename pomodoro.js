@@ -117,6 +117,6 @@ class Promodoro extends Emitter {
 /**
  * Version
  */
-Promodoro.VERSION = '0.2.0';
+Promodoro.VERSION = '0.3.0';
 
 module.exports = Promodoro;

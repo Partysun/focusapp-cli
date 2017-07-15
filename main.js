@@ -95,7 +95,7 @@ function launch(config) {
     config.longRestDuration
   );
 
-  if (argv._[0] === 'stats') {
+  if (argv._[0] === 'report') {
     stats();
   } else {
     ask().then(() => {

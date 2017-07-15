@@ -1,4 +1,4 @@
-# Focusapp-cli
+# Focus
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Partysun/focusapp-cli/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/Partysun/focusapp-cli.svg?branch=master)](https://travis-ci.org/Partysun/focusapp-cli)
 
@@ -13,25 +13,27 @@ npm install -g focusapp-cli
 
 ## Usage
 
-Run `focus` to start
-You can change configuration in ~/.focus.json
-Configuration file will create after first launch.
+Run `focus` to start. You can change configuration in ~/.focus.json
+
+Configuration file will create after first launch. Configuration path is `~/.focus.js`
 
 Options: 
 - --help, -h
-- stats
+- report
 
 ### Example `shell`
 
-# get stats information
-$ focus stats
-# start your focus time
+```bash
+# Report information
+$ focus report
+# It's time for work!
 $ focus
+```
 
 ## Roadmap
 
-- [ ] Stats show count of all tasks 
-- [ ] Stats show today tasks
-- [ ] Stats show heatmap of tasks of the month
+- [ ] Report show count of all tasks 
+- [ ] Report show today tasks
+- [ ] Report show heatmap of tasks of the month
 - [ ] Set configaration through the args, not only config file
 - [x] Autocomplete tasks title
