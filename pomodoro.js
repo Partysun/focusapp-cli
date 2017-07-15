@@ -3,9 +3,9 @@ const Emitter = require('emmett');
 const STATES = {
   focus: 'focus',
   rest: 'rest'
-}
+};
 
-//https://en.wikipedia.org/wiki/Pomodoro_Technique#Underlying_principles
+// https://en.wikipedia.org/wiki/Pomodoro_Technique#Underlying_principles
 class Promodoro extends Emitter {
 
   /**
@@ -29,24 +29,19 @@ class Promodoro extends Emitter {
 
   /**
    * Start the promodoro timer.
-   * 
+   *
    * @param {function} tick - The tick func is fired every 1 second.
    * @return {promise}
    */
   start() {
     const startTime = Date.now();
     this.state = this.state === STATES.rest ? STATES.focus : STATES.rest;
-    this.step = this.step < this.stepsInSet ? this.step + 1 : 0;
-    const duration = ((step, state) => {
-      if (state === STATES.focus) {
-        return this.focusTime; 
-      } else {
-        return step === 1 ? this.longRestDuration : this.shortRestDuration;
-      }
-    })(this.step, this.state);
-
+    if (this.state === STATES.focus) {
+      this.step = this.step < this.stepsInSet ? this.step + 1 : 1;
+    }
+    const duration = this.calcDuration();
     this.emit('start', {
-      duration: duration,
+      duration,
       state: this.state,
       step: this.step
     });
@@ -69,7 +64,7 @@ class Promodoro extends Emitter {
 
       this.emit('tick', {
         leftTime: this.humanize(leftTime),
-        state: state
+        state
       });
 
       if (delta > duration - 1) {
@@ -77,14 +72,20 @@ class Promodoro extends Emitter {
         interval = null;
         this.stop();
       }
-
     }, 1000, startTimestamp, state);
   }
 
   teardown() {
     this.emit('teardown');
     // Killing event emitter
-    this.kill(); 
+    this.kill();
+  }
+
+  calcDuration() {
+    if (this.state === STATES.focus) {
+      return this.focusTime;
+    }
+    return this.step === this.stepsInSet ? this.longRestDuration : this.shortRestDuration;
   }
 
   /**
@@ -94,8 +95,11 @@ class Promodoro extends Emitter {
    * @return {string} The time string, ex.: '1 min 25 sec'.
    */
   humanize(time) {
+    if (time < 0) {
+      return '0:00';
+    }
     const mins = Math.floor(time / 60);
-    const secs = time % 60; 
+    const secs = time % 60;
     return mins + ':' + (secs > 9 ? secs : `0${secs}`);
   }
 
@@ -105,14 +109,14 @@ class Promodoro extends Emitter {
    * @return {string} - The promodoro's identity.
    */
   toString() {
-    return this._identity; 
+    return this._identity;
   }
-   
+
 }
 
 /**
  * Version
  */
-Promodoro.VERSION = '0.1.0';
+Promodoro.VERSION = '0.2.0';
 
 module.exports = Promodoro;
