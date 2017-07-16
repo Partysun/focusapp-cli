@@ -20,6 +20,7 @@ npm install -g focusapp-cli
 Run `focus` to start. You can change configuration in ~/.focus.json
 
 Configuration file will create after first launch. Configuration path is `~/.focus.js`
+Database saves in `~/.focus.db`.
 
 Options: 
 - --help, -h

@@ -12,11 +12,12 @@ const argv = require('minimist')(process.argv.slice(2));
 const Pomodoro = require('./pomodoro.js');
 
 const configpath = `${homedir}/.focus.json`;
+const dbpath = `${homedir}/.focus.db`;
 const notifier = new Notification({sound: 'Heya'});
 
 usage('./usage.md');
 
-const db = new Datastore({filename: './db', autoload: true});
+const db = new Datastore({filename: dbpath, autoload: true});
 
 jsonfile.readFile(configpath, (err, savedConfig) => {
   let config = {
