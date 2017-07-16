@@ -10,6 +10,7 @@ const moment = require('moment');
 const usage = require('cli-usage');
 const argv = require('minimist')(process.argv.slice(2));
 const Pomodoro = require('./pomodoro.js');
+const TaskModel = require('./task.model.js');
 
 const configpath = `${homedir}/.focus.json`;
 const dbpath = `${homedir}/.focus.db`;
@@ -18,6 +19,7 @@ const notifier = new Notification({sound: 'Heya'});
 usage('./usage.md');
 
 const db = new Datastore({filename: dbpath, autoload: true});
+const Task = new TaskModel(db);
 
 jsonfile.readFile(configpath, (err, savedConfig) => {
   let config = {
@@ -35,34 +37,33 @@ jsonfile.readFile(configpath, (err, savedConfig) => {
   launch(config);
 });
 
-const stats = () => {
-  const start = moment().startOf('day').unix() * 1000;
-  db.find({
-    created: {
-      $gte: start
-    }
-  }, (err, docs) => {
-    if (err) {
-      console.log('App crushes with the database error!');
-    }
-    console.log(`Focus times today: ${docs.length}`);
+const report = () => {
+  const countToday = Task.count('day');
+  const countWeek = Task.count('week');
+  const countMonth = Task.count('month');
+  Promise.all([countToday, countWeek, countMonth]).then(countes => {
+    console.log(`${moment().format('lll')}`);
+    console.log('-------------------------------');
+    console.log(`Today: ${countes[0]} focuses`);
+    console.log(`Week: ${countes[1]} focuses`);
+    console.log(`Month: ${countes[2]} focuses`);
   });
 };
 
-const searchTask = (_, input) => {
-  return new Promise((resolve, reject) => {
-    db.find({title: new RegExp(input)}, (err, docs) => {
-      if (err) {
-        reject();
-      }
-      const result = docs.map(task => {
-        return task.title;
-      }).filter((task, index, tasks) => tasks.indexOf(task) === index);
-      if (result.length === 0 && input && input.length > 0) {
-        resolve([input]);
-      }
-      resolve(result);
+const listLastTasks = () => {
+  Task.list({limit: 10}).then(tasks => {
+    if (tasks.length === 0) {
+      console.log('0 focuses done yet. You can do it.');
+      process.exit();
+    }
+    const result = tasks.map((task, index) => {
+      return `${index + 1}) ${task.title} - ${moment.unix(task.created / 1000).fromNow()}`;
     });
+    process.stdout.write(`Last 10 focuses: \n\n${result.join('\n')}`);
+    process.exit();
+  }).catch(() => {
+    console.log('Database error!');
+    process.exit();
   });
 };
 
@@ -74,16 +75,12 @@ const ask = () => {
         name: 'task',
         message: 'Create new task or search',
         pageSize: 3,
-        source: searchTask
+        source: (_, title) => Task.searchTask(title)
       }
     ];
 
-    inquirer.prompt(questions).then(answers => {
-      db.insert({
-        title: answers.task,
-        created: Date.now()
-      });
-      resolve();
+    inquirer.prompt(questions).then(answer => {
+      Task.create(answer.task).then(resolve);
     });
   });
 };
@@ -96,8 +93,13 @@ function launch(config) {
     config.longRestDuration
   );
 
-  if (argv._[0] === 'report') {
-    stats();
+  if (argv.v || argv.version) {
+    console.log(`v${require('./package.json').version}`);
+    process.exit();
+  } else if (argv._[0] === 'list') {
+    listLastTasks();
+  } else if (argv._[0] === 'report') {
+    report();
   } else {
     ask().then(() => {
       pd.start();

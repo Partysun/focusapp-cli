@@ -22,23 +22,26 @@ Run `focus` to start. You can change configuration in ~/.focus.json
 Configuration file will create after first launch. Configuration path is `~/.focus.js`
 Database saves in `~/.focus.db`.
 
-Options: 
+Options:
 - --help, -h
 - report
+- list
+- --version, -v
 
 ### Example `shell`
 
 ```bash
-# Report information
+# Report information about today, week and month
 $ focus report
 # It's time for work!
 $ focus
+# Get last 10 focuses
+$ focus list
 ```
 
 ## Roadmap
 
-- [ ] Report show count of all tasks 
-- [ ] Report show today tasks
+- [x] Report show today tasks
 - [ ] Report show heatmap of tasks of the month
 - [ ] Set configaration through the args, not only config file
 - [x] Autocomplete tasks title
@@ -47,7 +50,7 @@ $ focus
 
 Preparing...
 
-1. clone this repo
+1. fork this repo
 2. yarn
 3. node.js main.js
 
